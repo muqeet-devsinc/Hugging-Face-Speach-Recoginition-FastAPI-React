@@ -12,13 +12,6 @@ async def load_whisper_asr():
     whisper_singleton = Text2Speach()
     app.state.whisper_asr = whisper_singleton
 
-@app.get("/")
-def health():
-    return {
-        "status" : "OK",
-        "detail": "API is working"
-    }
-
 
 @app.post("/transcribe")
 async def transcribe_audio(file: UploadFile= File(...)):
@@ -37,6 +30,10 @@ async def transcribe_audio(file: UploadFile= File(...)):
     with open(file_path, "wb") as audio_file:
         audio_file.write(await file.read())
     whisper_singleton = app.state.whisper_asr
+
+    print("Object being used is ", whisper_singleton)
+
+    
     transcriptions = whisper_singleton.whisper(file_path)
 
 
