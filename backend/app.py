@@ -1,11 +1,26 @@
 import os
 from pathlib import Path
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException,status
+from fastapi.middleware.cors import CORSMiddleware
 from main import Text2Speach
+import uvicorn
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(title="Whisper Model API")
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.on_event("startup")
 async def load_whisper_asr():
@@ -13,8 +28,19 @@ async def load_whisper_asr():
     app.state.whisper_asr = whisper_singleton
 
 
+async def is_audio_file(file: UploadFile) -> bool:
+    content_type = file.content_type
+    return content_type.startswith("audio/")
+
+
 @app.post("/transcribe")
 async def transcribe_audio(file: UploadFile= File(...)):
+
+    if not await is_audio_file(file):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only audio files are allowed.",
+        )
 
 
     media_folder = os.path.join(BASE_DIR, "temp")
@@ -44,3 +70,6 @@ async def transcribe_audio(file: UploadFile= File(...)):
         print(f"Error occurred while deleting the file: {e}")
 
     return transcriptions
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=30000,)
