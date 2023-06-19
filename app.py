@@ -1,10 +1,10 @@
 import os
-from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, HTTPException,status
 from fastapi.middleware.cors import CORSMiddleware
 from main import Text2Speach
 import uvicorn
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(title="Whisper Model API")

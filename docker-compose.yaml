@@ -6,3 +6,26 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - redis:/data
+
+  # celery:
+  #   restart: unless-stopped
+  #   build:
+  #     context: ./
+  #   command: celery -A finn worker -l info
+  #   volumes:
+  #     - .:/django_app
+  #   env_file:
+  #     - .env.local
+  #   depends_on:
+  #     - backend
+  #     - db
+  #     - redis

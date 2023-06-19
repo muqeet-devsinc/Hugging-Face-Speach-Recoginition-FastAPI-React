@@ -1,15 +1,16 @@
 import React, { useContext } from 'react';
-import { List } from 'antd';
+import { List, Typography } from 'antd';
 import {AudioContext} from '../context/AudioContext'
 const AudioList = () => {
 
   const state = useContext(AudioContext)
 
-  const renderItem = (audioBlob) => {
-    const url = URL.createObjectURL(audioBlob);
+  const renderItem = (item) => {
+    const url = URL.createObjectURL(item.audioBlob);
     return (
       <List.Item>
         <audio src={url} controls />
+        <Typography.Text>{item.result}</Typography.Text>
       </List.Item>
     );
   };

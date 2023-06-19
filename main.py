@@ -1,4 +1,7 @@
 from transformers import pipeline
+import os
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent
 
 class Text2Speach:
     _instance = None
@@ -13,5 +16,5 @@ class Text2Speach:
 if __name__ == "__main__":
 
     whisper_singleton = Text2Speach()
-    transcriptions = whisper_singleton.whisper('audio.flac')
+    transcriptions = whisper_singleton.whisper(os.path.join(BASE_DIR,'audio.flac'))
     print(transcriptions)
